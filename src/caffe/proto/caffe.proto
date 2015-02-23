@@ -318,6 +318,7 @@ message LayerParameter {
   optional TanHParameter tanh_param = 127;
   optional ThresholdParameter threshold_param = 128;
   optional WindowDataParameter window_data_param = 129;
+  optional ReshapeVolumeParameter reshape_volume_param = 129;
 }
 
 // Message that stores parameters used to apply transformation
@@ -717,6 +718,12 @@ message WindowDataParameter {
   optional bool cache_images = 12 [default = false];
   // append root_folder to locate images
   optional string root_folder = 13 [default = ""];
+}
+
+message ReshapeVolumeParameter {
+  optional uint32 out_channels = 1;
+  optional uint32 out_height = 2;
+  optional uint32 out_width = 3;
 }
 
 // DEPRECATED: use LayerParameter.

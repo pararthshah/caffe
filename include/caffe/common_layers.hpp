@@ -307,6 +307,41 @@ class MVNLayer : public Layer<Dtype> {
 };
 
 /**
+ * @brief Reshapes a 1d volume (n,c,1,1) to a slice (n,c_o,h_o,w_o), where
+ * h_o*w_o must equal c (input channels). If c_o > 1, then the same (h_o,w_o)
+ * slice is copied across all output channels, by sharing data references.
+ *
+ * TODO(dox): thorough documentation for Forward, Backward, and proto params.
+ */
+template <typename Dtype>
+class ReshapeVolumeLayer : public Layer<Dtype> {
+ public:
+  explicit ReshapeVolumeLayer(const LayerParameter& param)
+      : Layer<Dtype>(param) {}
+  virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+
+  virtual inline const char* type() const { return "ReshapeVolume"; }
+  virtual inline int ExactNumBottomBlobs() const { return 1; }
+  virtual inline int ExactNumTopBlobs() const { return 1; }
+
+ protected:
+  virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+  virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+  virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
+      const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+  virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
+      const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+
+  int out_height_;
+  int out_width_;
+  int out_channels_;
+  int slice_size_;
+};
+
+/**
  * @brief Ignores bottom blobs while producing no top blobs. (This is useful
  *        to suppress outputs during testing.)
  */
