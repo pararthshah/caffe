@@ -312,13 +312,13 @@ message LayerParameter {
   optional PowerParameter power_param = 122;
   optional PythonParameter python_param = 130;
   optional ReLUParameter relu_param = 123;
+  optional ReshapeVolumeParameter reshape_volume_param = 131;
   optional SigmoidParameter sigmoid_param = 124;
   optional SoftmaxParameter softmax_param = 125;
   optional SliceParameter slice_param = 126;
   optional TanHParameter tanh_param = 127;
   optional ThresholdParameter threshold_param = 128;
   optional WindowDataParameter window_data_param = 129;
-  optional ReshapeVolumeParameter reshape_volume_param = 129;
 }
 
 // Message that stores parameters used to apply transformation
@@ -774,6 +774,7 @@ message V1LayerParameter {
     TANH = 23;
     WINDOW_DATA = 24;
     THRESHOLD = 31;
+    RESHAPE_VOLUME = 100;
   }
   optional LayerType type = 5;
   repeated BlobProto blobs = 6;
@@ -817,6 +818,7 @@ message V1LayerParameter {
   optional TransformationParameter transform_param = 36;
   optional LossParameter loss_param = 42;
   optional V0LayerParameter layer = 1;
+  optional ReshapeVolumeParameter reshape_volume_param = 131;
 }
 
 // DEPRECATED: V0LayerParameter is the old way of specifying layer parameters

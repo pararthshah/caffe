@@ -796,6 +796,10 @@ bool UpgradeV1LayerParameter(const V1LayerParameter& v1_layer_param,
     layer_param->mutable_relu_param()->CopyFrom(
         v1_layer_param.relu_param());
   }
+  if (v1_layer_param.has_reshape_volume_param()) {
+    layer_param->mutable_reshape_volume_param()->CopyFrom(
+        v1_layer_param.reshape_volume_param());
+  }
   if (v1_layer_param.has_sigmoid_param()) {
     layer_param->mutable_sigmoid_param()->CopyFrom(
         v1_layer_param.sigmoid_param());
@@ -897,6 +901,8 @@ const char* UpgradeV1LayerType(const V1LayerParameter_LayerType type) {
     return "Power";
   case V1LayerParameter_LayerType_RELU:
     return "ReLU";
+  case V1LayerParameter_LayerType_RESHAPE_VOLUME:
+    return "ReshapeVolume";
   case V1LayerParameter_LayerType_SIGMOID:
     return "Sigmoid";
   case V1LayerParameter_LayerType_SIGMOID_CROSS_ENTROPY_LOSS:

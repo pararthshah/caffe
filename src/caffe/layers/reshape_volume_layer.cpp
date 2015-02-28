@@ -18,6 +18,10 @@ void ReshapeVolumeLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
   out_channels_ = reshape_volume_param.out_channels();
   slice_size_ = out_height_ * out_width_;
 
+  CHECK_GT(out_height_, 0) << "Out dimensions cannot be zero.";
+  CHECK_GT(out_width_, 0)  << "Out dimensions cannot be zero.";
+  CHECK_GT(out_channels_, 0)  << "Out dimensions cannot be zero.";
+
   CHECK_EQ(slice_size_, bottom[0]->channels()) << this->type() << 
     "Layer expects out_h * out_w == in_c";
   CHECK_EQ(bottom[0]->height(), 1) << this->type() << 
@@ -42,7 +46,7 @@ template <typename Dtype>
 void ReshapeVolumeLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom) {
   if (!propagate_down[0]) { return; }
-  if (out_channels_.size() == 1) {
+  if (out_channels_ == 1) {
     caffe_copy(slice_size_, top[0]->cpu_diff(), bottom[0]->mutable_cpu_diff());
     return;
   }
@@ -55,7 +59,7 @@ void ReshapeVolumeLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
     for (int c = 2; c < out_channels_; ++c) {
       const Dtype* top_diff = top[0]->cpu_diff() + top[0]->offset(n,c,0,0);
       Dtype* bottom_diff = bottom[0]->mutable_cpu_diff() + bottom[0]->offset(n,0,0,0);
-      caffe_axpy(count_, Dtype(1.), top_diff, bottom_diff);
+      caffe_axpy(slice_size_, Dtype(1.), top_diff, bottom_diff);
     }
   }
 }

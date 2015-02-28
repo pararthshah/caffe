@@ -21,7 +21,7 @@ template <typename Dtype>
 void ReshapeVolumeLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom) {
   if (!propagate_down[0]) { return; }
-  if (out_channels_.size() == 1) {
+  if (out_channels_ == 1) {
     caffe_copy(slice_size_, top[0]->gpu_diff(), bottom[0]->mutable_gpu_diff());
     return;
   }
@@ -34,7 +34,7 @@ void ReshapeVolumeLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
     for (int c = 2; c < out_channels_; ++c) {
       const Dtype* top_diff = top[0]->gpu_diff() + top[0]->offset(n,c,0,0);
       Dtype* bottom_diff = bottom[0]->mutable_gpu_diff() + bottom[0]->offset(n,0,0,0);
-      caffe_axpy(count_, Dtype(1.), top_diff, bottom_diff);
+      caffe_axpy(slice_size_, Dtype(1.), top_diff, bottom_diff);
     }
   }
 }
